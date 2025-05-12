@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import userRouter from './user/user.router';
 import authRouter from './auth/auth.router';
-import linkRouter from './link/link.router';
-import publicRouter from './public/public.router';
-import authenticateToken from '../shared/middlewares/authenticate';
-import movieRouter from './movie/movie.router';
+import customersRouter from './customer/customers.router';
+import ordersRouter from './orders/orders.router';
+import campaignRouter from './campaign/campaign.router';
+import communicationRouter from './communication/communication.router';
 
 export default (): Router => {
   const app = Router();
-  app.use('/user', userRouter());
   app.use('/auth', authRouter());
-  app.use('/movies', movieRouter());
-  // app.use('/link', authenticateToken(), linkRouter());
-  // app.use('/public', publicRouter());
+  app.use('/api/customers', customersRouter());
+  app.use('/api/orders', ordersRouter());
+  app.use('/api/campaigns', campaignRouter());
+  app.use('/api/communication', communicationRouter());
+
   return app;
 };

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { url } from 'inspector';
 dotenv.config();
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -15,8 +16,17 @@ export default {
   databaseURL: process.env.MONGO_URI,
   dbName: process.env.DB_NAME || 'crm-xeno',
 
-  redisURL: process.env.REDIS_URL || 'redis://localhost:6379',
-
+  /**
+   * Redis connection URL
+   */
+  redis: {
+    url: process.env.REDIS_URL || 'redis://localhost:6379',
+    port: parseInt(process.env.REDIS_PORT) || 6379,
+  },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  },
   /**
    * The secret sauce to validate JWT
    */
