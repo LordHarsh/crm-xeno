@@ -11,7 +11,15 @@ const campaignSchema = Joi.object({
     name: Joi.string().required(),
     segmentRules: Joi.object().required(),
     messageTemplate: Joi.string().required(),
-    aiTags: Joi.array().items(Joi.string()).default([])
+    tags: Joi.array().items(Joi.string()).default([]),
+    scheduledDay: Joi.string().optional(),
+    scheduledTime: Joi.string().optional(),
+    user: Joi.object({
+        id: Joi.string().required(),
+        email: Joi.string().email().required(),
+        name: Joi.string().required(),
+        role: Joi.string().valid('admin', 'user').required()
+    }).required()
 });
 
 
@@ -155,7 +163,7 @@ export default (): Router => {
     router.post('/', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { error, value } = campaignSchema.validate(req.body);
-
+            console.log('Validation result:', error, value);
             if (error) {
                 return res.status(400).json({ error: error.details[0].message });
             }
@@ -175,7 +183,7 @@ export default (): Router => {
             };
 
             const result = await db.collection('campaigns').insertOne(campaign);
-
+            console.log('Campaign created with ID:', result.insertedId);
             // Start campaign delivery process
             await startCampaignDelivery(result.insertedId.toString(), audience, value.messageTemplate);
 
