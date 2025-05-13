@@ -10,7 +10,7 @@ import { orderSchema } from './orders.schema';
 export default (): Router => {
     const router = Router();
     // Get all orders (with pagination and filtering)
-    router.get('/', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.get('/', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const db = await database();
             const {
@@ -53,7 +53,7 @@ export default (): Router => {
     });
 
     // Get order by ID
-    router.get('/:id', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.get('/:id', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const db = await database();
             const order = await db.collection('orders').findOne({
@@ -71,7 +71,7 @@ export default (): Router => {
     });
 
     // Create new order
-    router.post('/', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.post('/', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             // Validate request body
             const { error, value } = orderSchema.validate(req.body);
@@ -110,7 +110,7 @@ export default (): Router => {
     });
 
     // Update order
-    router.put('/:id', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.put('/:id', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { error, value } = orderSchema.validate(req.body);
 
@@ -134,7 +134,7 @@ export default (): Router => {
     });
 
     // Delete order
-    router.delete('/:id', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.delete('/:id', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             // Check if order exists
             const db = await database();

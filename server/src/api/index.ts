@@ -5,6 +5,7 @@ import customersRouter from './customer/customers.router';
 import ordersRouter from './orders/orders.router';
 import campaignRouter from './campaign/campaign.router';
 import communicationRouter from './communication/communication.router';
+import dashboardRouter from './dashboard/dashboard.router';
 
 export default (): Router => {
   const app = Router();
@@ -13,9 +14,7 @@ export default (): Router => {
   app.use('/orders', ordersRouter());
   app.use('/campaigns', campaignRouter());
   app.use('/communication', communicationRouter());
-  app.get("/", (req, res) => {
-    res.send("Welcome to the Mini CRM API");
-  });
+  app.use('/dashboard', dashboardRouter());
 
   return app;
 };

@@ -19,7 +19,7 @@ export default (): Router => {
     const router = Router();
     // app.put('/update-password', validateRequest('body', updatePasswordSchema), authenticateToken(), updatePassword);
 
-    router.get('/', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.get('/', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const db = await database();
             const { page = 1, limit = 10 } = req.query;
@@ -80,7 +80,7 @@ export default (): Router => {
     });
 
     // Get campaign by ID with delivery stats
-    router.get('/:id', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.get('/:id', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const db = await database();
             const campaign = await db.collection('campaigns').findOne({
@@ -131,7 +131,7 @@ export default (): Router => {
     });
 
     // Preview audience size for segment rules
-    router.post('/preview-audience', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.post('/preview-audience', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { segmentRules } = req.body;
 
@@ -152,7 +152,7 @@ export default (): Router => {
     });
 
     // Create campaign and start delivery
-    router.post('/', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
+    router.post('/', authenticateToken(), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { error, value } = campaignSchema.validate(req.body);
 

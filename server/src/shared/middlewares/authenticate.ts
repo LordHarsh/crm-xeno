@@ -1,26 +1,51 @@
 import { NextFunction, Request, Response } from 'express';
-import { verifyToken } from '../jwt';
 import database from '../../loaders/database';
+import { verifyToken } from '../jwt';
 
+// Export a middleware factory function
 export default function authenticateToken() {
+  // Return the middleware function
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const authHeader = req.headers['authorization'];
-      const token = authHeader?.split(' ')[1];
+      
+      if (!authHeader) {
+        throw { statusCode: 401, message: 'Authorization header missing' };
+      }
+      
+      const token = authHeader.split(' ')[1];
+      
       if (!token) {
-        throw { statusCode: 401, message: 'Token Not Found' };
+        throw { statusCode: 401, message: 'Authorization token missing' };
       }
+
       const { email } = verifyToken(token);
-      const data = await (await database()).collection('users').findOne({ email });
-      if (!data) {
-        throw { statusCode: 404, message: 'User Not Found' };
+      
+      // Check if user exists in database
+      const db = await database();
+      const user = await db.collection('users').findOne({
+        email,
+      });
+      
+      if (!user) {
+        throw { statusCode: 404, message: 'User not found' };
       }
-      res.locals.user = data;
+      
+      // Attach user to request
+      req.body.user = {
+        id: user._id.toString(),
+        email: user.email,
+        name: user.name,
+        role: user.role
+      };
+      res.locals.user = user;
+      console.log('Authenticated user:', res.locals.user);
+      
       next();
     } catch (error) {
       res.status(error.statusCode || 500).json({
         success: false,
-        message: error.message,
+        message: error.message || 'Authentication failed',
       });
     }
   };
