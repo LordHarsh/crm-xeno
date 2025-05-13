@@ -120,7 +120,7 @@ export const useCampaignStore = create<CampaignState>()((set, get) => ({
       set({ audienceSize: size, isLoading: false });
       
       if (size === 0) {
-        toast.warning('No customers match these criteria');
+        toast.error('No customers match these criteria');
       } else {
         toast.success(`Found ${size} matching customers`);
       }

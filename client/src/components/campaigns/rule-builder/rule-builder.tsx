@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import RuleGroup from './rule-group';
+import RuleGroup from '@/components/campaigns/rule-builder/rule-group';
 import NLRuleGenerator from '@/components/ai/nl-rule-generator';
 import MessageGenerator from '@/components/ai/message-generator';
 import { Wand2, EyeIcon } from 'lucide-react';
@@ -157,7 +157,7 @@ export default function RuleBuilder() {
           required
         />
         <p className="mt-1 text-sm text-muted-foreground">
-          Use {'{name}'} to include the customer's name in the message.
+          Use {'{name}'} to include the customer&apos;s name in the message.
         </p>
       </div>
       

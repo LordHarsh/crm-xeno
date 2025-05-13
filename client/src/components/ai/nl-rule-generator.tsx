@@ -72,7 +72,7 @@ export default function NLRuleGenerator({ onRulesGenerated }: NLRuleGeneratorPro
             rows={4}
           />
           <p className="mt-2 text-xs text-muted-foreground">
-            Describe your target audience in natural language and we'll convert it to segmentation rules.
+            Describe your target audience in natural language and we&apos;ll convert it to segmentation rules.
           </p>
         </div>
         

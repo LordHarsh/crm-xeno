@@ -42,7 +42,7 @@ export default function RuleItem({ condition, onChange, onDelete }: RuleItemProp
   // Handle field change
   const handleFieldChange = (value: string) => {
     const field = value;
-    let updatedCondition = { ...condition, field };
+    const updatedCondition = { ...condition, field };
     
     // Reset condition and value when field changes
     if (field === 'totalSpend' || field === 'visits') {

@@ -22,6 +22,39 @@ type AuthState = {
   isAuthenticated: () => boolean;
 };
 
+// Custom cookie storage for SSR compatibility  
+const cookieStorage = {
+  getItem: (name: string): string | null => {
+    // Handle both client and server side
+    if (typeof window === 'undefined') {
+      return null; // Server-side, will be handled by middleware directly
+    }
+    
+    const value = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(name + '='))
+      ?.split('=')[1];
+      
+    if (!value) return null;
+    return decodeURIComponent(value);
+  },
+  
+  setItem: (name: string, value: string) => {
+    // Only set cookies client-side
+    if (typeof window !== 'undefined') {
+      // Set cookie that's accessible from both JS and http-only middleware
+      document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=2592000; SameSite=Strict`;
+    }
+  },
+  
+  removeItem: (name: string) => {
+    // Only remove cookies client-side
+    if (typeof window !== 'undefined') {
+      document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    }
+  },
+});
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -78,12 +111,53 @@ export const useAuthStore = create<AuthState>()(
         set({ user: null, token: null });
         toast.success('Logged out successfully');
       },
-      
-      isAuthenticated: () => !!get().user,
-    }),
-    {
+        isAuthenticated: () => {
+        // Check if we have a user object
+        const hasUser = !!get().user;
+        
+        // For client-side, we can just check the user object
+        if (typeof window !== 'undefined') {
+          return hasUser;
+        }
+        
+        // For server-side or middleware, we'd need to check the token from cookies directly
+        // But this function should primarily be used client-side
+        return hasUser;
+      },
+    }),{
       name: 'auth-storage',
       partialize: (state) => ({ token: state.token }),
+      storage: {
+        getItem: (name) => {
+          // Handle both client and server side
+          if (typeof window === 'undefined') {
+            return null;
+          }
+          
+          const value = document.cookie
+            .split('; ')
+            .find(row => row.startsWith(`${name}=`))
+            ?.split('=')[1];
+            
+          if (!value) return null;
+          return JSON.parse(decodeURIComponent(value));
+        },
+        
+        setItem: (name, value) => {
+          // Only set cookies client-side
+          if (typeof window !== 'undefined') {
+            // Set cookie that's accessible from both JS and http-only middleware
+            document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))}; path=/; max-age=2592000; SameSite=Strict`;
+          }
+        },
+        
+        removeItem: (name) => {
+          // Only remove cookies client-side
+          if (typeof window !== 'undefined') {
+            document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+          }
+        }
+      }
     }
   )
 );

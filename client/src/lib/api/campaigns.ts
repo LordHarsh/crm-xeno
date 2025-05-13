@@ -1,6 +1,6 @@
 // lib/api/campaigns.js
 import axios from 'axios';
-import useAuthStore from '@/store/auth-store';
+import { useAuthStore } from '@/store/auth-store';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,7 +13,7 @@ export const fetchCampaigns = async () => {
   return response.data;
 };
 
-export const fetchCampaign = async (id) => {
+export const fetchCampaign = async (id: any) => {
   const token = useAuthStore.getState().token;
   const response = await axios.get(
     `${BASE_URL}/api/campaigns/${id}`,
@@ -22,7 +22,7 @@ export const fetchCampaign = async (id) => {
   return response.data;
 };
 
-export const createCampaign = async (campaignData) => {
+export const createCampaign = async (campaignData: any) => {
   const token = useAuthStore.getState().token;
   const response = await axios.post(
     `${BASE_URL}/api/campaigns`,
@@ -32,7 +32,7 @@ export const createCampaign = async (campaignData) => {
   return response.data;
 };
 
-export const previewAudience = async (segmentRules) => {
+export const previewAudience = async (segmentRules: any) => {
   const token = useAuthStore.getState().token;
   const response = await axios.post(
     `${BASE_URL}/api/campaigns/preview-audience`,
