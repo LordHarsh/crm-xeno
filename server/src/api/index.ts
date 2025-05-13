@@ -6,6 +6,7 @@ import ordersRouter from './orders/orders.router';
 import campaignRouter from './campaign/campaign.router';
 import communicationRouter from './communication/communication.router';
 import dashboardRouter from './dashboard/dashboard.router';
+import aiRouter from './ai/ai.router';
 
 export default (): Router => {
   const app = Router();
@@ -15,6 +16,7 @@ export default (): Router => {
   app.use('/campaigns', campaignRouter());
   app.use('/communication', communicationRouter());
   app.use('/dashboard', dashboardRouter());
+  app.use('/ai', aiRouter());
 
   return app;
 };

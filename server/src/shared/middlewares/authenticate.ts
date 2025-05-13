@@ -39,7 +39,6 @@ export default function authenticateToken() {
         role: user.role
       };
       res.locals.user = user;
-      console.log('Authenticated user:', res.locals.user);
       
       next();
     } catch (error) {

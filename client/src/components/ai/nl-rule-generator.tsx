@@ -51,6 +51,13 @@ export default function NLRuleGenerator({ onRulesGenerated }: NLRuleGeneratorPro
     }
   };
   
+  // Example prompts
+  const examplePrompts = [
+    "People who spent over ₹5000 in the last 6 months and haven't shopped recently",
+    "Customers who visited more than 5 times but spent less than ₹2000",
+    "Premium customers who are inactive for at least 30 days"
+  ];
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -74,6 +81,21 @@ export default function NLRuleGenerator({ onRulesGenerated }: NLRuleGeneratorPro
           <p className="mt-2 text-xs text-muted-foreground">
             Describe your target audience in natural language and we&apos;ll convert it to segmentation rules.
           </p>
+          
+          <div className="mt-4">
+            <p className="text-sm font-medium mb-2">Or try one of these examples:</p>
+            <div className="space-y-2">
+              {examplePrompts.map((example, index) => (
+                <div 
+                  key={index} 
+                  className="text-sm p-2 bg-muted rounded-md cursor-pointer hover:bg-muted/80"
+                  onClick={() => setPrompt(example)}
+                >
+                  {example}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         
         <DialogFooter>

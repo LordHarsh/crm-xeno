@@ -55,6 +55,14 @@ export default function MessageGenerator({ onSelectMessage }: MessageGeneratorPr
     toast.success('Message template selected!');
   };
   
+  // Example objectives
+  const exampleObjectives = [
+    "Bring back inactive users",
+    "Promote new product launch to high-value customers",
+    "Encourage repeat purchases with a special discount",
+    "Introduce loyalty program to frequent shoppers"
+  ];
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -78,6 +86,21 @@ export default function MessageGenerator({ onSelectMessage }: MessageGeneratorPr
             onChange={(e) => setObjective(e.target.value)}
             placeholder="E.g., bring back inactive users"
           />
+          
+          <div className="mt-4">
+            <p className="text-sm font-medium mb-2">Or try one of these examples:</p>
+            <div className="space-y-2">
+              {exampleObjectives.map((example, index) => (
+                <div 
+                  key={index} 
+                  className="text-sm p-2 bg-muted rounded-md cursor-pointer hover:bg-muted/80"
+                  onClick={() => setObjective(example)}
+                >
+                  {example}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         
         <div className="flex justify-end mb-4">

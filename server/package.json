@@ -20,6 +20,8 @@
     "typescript": "^4.0.5"
   },
   "dependencies": {
+    "@google/genai": "^0.13.0",
+    "@google/generative-ai": "^0.24.1",
     "aws-sdk": "^2.1425.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.19.0",

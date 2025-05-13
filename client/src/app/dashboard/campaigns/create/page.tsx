@@ -3,18 +3,23 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
 import { toast } from 'react-hot-toast';
 import { useCampaignStore } from '@/store/campaign-store';
 import RuleBuilder from '@/components/campaigns/rule-builder/rule-builder';
 import NLRuleGenerator from '@/components/ai/nl-rule-generator';
 import MessageGenerator from '@/components/ai/message-generator';
+import LookalikeGenerator from '@/components/ai/lookalike-generator';
+import SmartScheduling from '@/components/ai/smart-scheduling';
+import ImageSuggestions from '@/components/ai/image-suggestions';
+import AutoTagger from '@/components/ai/auto-tagger';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { ArrowLeft, Wand2, EyeIcon } from 'lucide-react';
+import { ArrowLeft, Wand2, EyeIcon, Calendar, Clock } from 'lucide-react';
 
 // Initial rule structure
 const initialRule = {
@@ -28,6 +33,9 @@ export default function CreateCampaignPage() {
   const [campaignName, setCampaignName] = useState('');
   const [messageTemplate, setMessageTemplate] = useState('Hi {name}, here\'s a special offer for you!');
   const [rules, setRules] = useState(initialRule);
+  const [scheduledDay, setScheduledDay] = useState('');
+  const [scheduledTime, setScheduledTime] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   
   const { audienceSize, previewAudience, createCampaign, isLoading, resetAudienceSize } = useCampaignStore();
   const router = useRouter();
@@ -50,6 +58,15 @@ export default function CreateCampaignPage() {
     setMessageTemplate(message);
   };
   
+  const handleScheduleSelect = (day: string, time: string) => {
+    setScheduledDay(day);
+    setScheduledTime(time);
+  };
+  
+  const handleTagsGenerated = (newTags: string[]) => {
+    setTags(newTags);
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -68,11 +85,16 @@ export default function CreateCampaignPage() {
       return;
     }
     
-    const campaignId = await createCampaign({
+    const campaignData = {
       name: campaignName,
       segmentRules: rules,
-      messageTemplate
-    });
+      messageTemplate,
+      tags,
+      scheduledDay,
+      scheduledTime
+    };
+    
+    const campaignId = await createCampaign(campaignData);
     
     if (campaignId) {
       router.push('/dashboard/campaigns');
@@ -102,7 +124,7 @@ export default function CreateCampaignPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
+              <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium mb-1" htmlFor="name">
                     Campaign Name *
@@ -113,23 +135,72 @@ export default function CreateCampaignPage() {
                     onChange={(e) => setCampaignName(e.target.value)}
                     placeholder="Summer Sale Campaign"
                     required
-                    className="max-w-md"
                   />
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Campaign Tags
+                  </label>
+                  <AutoTagger 
+                    name={campaignName}
+                    segmentRules={rules}
+                    messageTemplate={messageTemplate}
+                    onTagsGenerated={handleTagsGenerated}
+                  />
+                </div>
+                
+                {(scheduledDay || scheduledTime) && (
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium mb-1">
+                      Scheduled Time
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <Calendar size={16} className="text-muted-foreground" />
+                      <span className="text-sm">{scheduledDay || 'Not scheduled'}</span>
+                      
+                      {scheduledTime && (
+                        <>
+                          <Clock size={16} className="text-muted-foreground ml-4" />
+                          <span className="text-sm">{scheduledTime}</span>
+                        </>
+                      )}
+                      
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => {
+                          setScheduledDay('');
+                          setScheduledTime('');
+                        }}
+                        className="ml-auto text-xs"
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
                 <div>
                   <CardTitle>Audience Segmentation</CardTitle>
                   <CardDescription>
                     Define who will receive your campaign
                   </CardDescription>
                 </div>
-                <NLRuleGenerator onRulesGenerated={handleRuleChange} />
+                <div className="flex flex-wrap gap-2">
+                  <NLRuleGenerator onRulesGenerated={handleRuleChange} />
+                  <LookalikeGenerator 
+                    sourceRules={rules} 
+                    onLookalikeGenerated={handleRuleChange} 
+                  />
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -168,14 +239,23 @@ export default function CreateCampaignPage() {
           
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
                 <div>
                   <CardTitle>Message Template</CardTitle>
                   <CardDescription>
                     Create the message that will be sent to your audience
                   </CardDescription>
                 </div>
-                <MessageGenerator onSelectMessage={handleMessageSelect} />
+                <div className="flex flex-wrap gap-2">
+                  <MessageGenerator onSelectMessage={handleMessageSelect} />
+                  <SmartScheduling 
+                    onTimeSelected={handleScheduleSelect} 
+                  />
+                  <ImageSuggestions 
+                    messageTemplate={messageTemplate}
+                    audience={audienceSize ? `${audienceSize} customers` : undefined}
+                  />
+                </div>
               </div>
             </CardHeader>
             <CardContent>
