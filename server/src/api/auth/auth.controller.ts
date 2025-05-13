@@ -133,7 +133,7 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
     // Check if user still exists in database
     const db = await database();
     const user = await db.collection('users').findOne({
-      _id: new ObjectId(email)
+      email,
     });
 
     if (!user) {

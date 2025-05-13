@@ -9,6 +9,7 @@ export default (): Router => {
   app.post('/login', validateRequest('body', loginUserSchema), loginUser);
   app.post('/google', googleLogin);
   app.post('/verify', verifyUser);
+  
 
   // app.put('/update-password', validateRequest('body', updatePasswordSchema), authenticateToken(), updatePassword);
   return app;

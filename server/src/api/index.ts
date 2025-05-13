@@ -9,10 +9,13 @@ import communicationRouter from './communication/communication.router';
 export default (): Router => {
   const app = Router();
   app.use('/auth', authRouter());
-  app.use('/api/customers', customersRouter());
-  app.use('/api/orders', ordersRouter());
-  app.use('/api/campaigns', campaignRouter());
-  app.use('/api/communication', communicationRouter());
+  app.use('/customers', customersRouter());
+  app.use('/orders', ordersRouter());
+  app.use('/campaigns', campaignRouter());
+  app.use('/communication', communicationRouter());
+  app.get("/", (req, res) => {
+    res.send("Welcome to the Mini CRM API");
+  });
 
   return app;
 };

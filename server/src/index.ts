@@ -22,6 +22,15 @@ async function startServer() {
       Logger.error(err);
       process.exit(1);
     });
+    const routes = app._router.stack
+  .filter(r => r.route)
+  .map(r => ({
+    path: r.route.path,
+    methods: Object.keys(r.route.methods).map(method => method.toUpperCase())
+  }));
+
+console.log(routes);
+
 }
 
 startServer();
