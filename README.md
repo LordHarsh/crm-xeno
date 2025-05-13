@@ -1,125 +1,266 @@
-# Project Xeno - CRM & Gemini-Powered Marketing Platform
+# Mini CRM Platform
 
-## Overview
+![image](https://github.com/user-attachments/assets/5d8228d8-0597-4213-bc95-62e23cade3dd)
+![image](https://github.com/user-attachments/assets/e1c2ed84-c383-495e-99c6-26d0e6160376)
 
-Project Xeno is a comprehensive Customer Relationship Management (CRM) and AI-powered marketing automation platform. It enables businesses to manage customer relationships, orchestrate targeted marketing campaigns with sophisticated audience segmentation, and leverage Google Gemini for advanced content creation, audience generation, scheduling suggestions, and campaign insights. The system features a Next.js client for a rich user experience and a robust Node.js/Express/MongoDB backend for API services and data management, with Redis used for asynchronous task processing.
 
-**Job Selection Note:** This README has been significantly updated based on newly provided files, detailing the integrated AI functionalities.
+A modern customer relationship management platform that enables customer segmentation, personalized campaign delivery, and intelligent insights using AI-powered features.
 
-## Architecture
+## ✨ Features
 
-The platform consists of two main parts:
+- **Dynamic Audience Segmentation** - Create complex segments with drag-and-drop rule builder
+- **Campaign Management** - Create, track, and analyze marketing campaigns
+- **Customer & Order Management** - Comprehensive data management and visualization
+- **Personalized Messaging** - Send targeted communications to specific audience segments
+- **Real-time Analytics** - Track delivery statistics and performance metrics
+- **Google OAuth Authentication** - Secure authentication and authorization
+- **Asynchronous Data Processing** - Scalable architecture with Redis Streams
 
-1.  **Client Application (Next.js):** Provides the user interface for all platform functionalities.
-2.  **Server Application (Node.js/Express):** Handles core business logic, data storage, and serves the main API, including integrated AI capabilities powered by Google Gemini via the `@google/genai` SDK.
+### 🧠 AI-Powered Features
 
-## 1. Client Application (Frontend)
+- **Natural Language to Segment Rules** - Convert plain English to complex segmentation logic
+- **AI-Driven Message Templates** - Generate personalized messaging based on campaign objectives
+- **Campaign Performance Insights** - AI-generated summaries and recommendations
+- **Smart Scheduling** - Intelligent send time recommendations based on audience behavior
+- **Lookalike Audience Generator** - Create similar audiences from successful segments
+- **Auto-tagging** - Automatically categorize campaigns based on content and audience
+- **Image Concept Suggestions** - Get visual concepts that complement your campaign messaging
 
-Located in the `client/` directory.
+## 🚀 Tech Stack
 
--   **Framework:** Next.js 15+
--   **Language:** TypeScript
--   **UI:** React, Tailwind CSS, Shadcn UI components (e.g., `label.tsx`, `separator.tsx`, `table.tsx`, `dialog.tsx` etc.)
--   **State Management:** Zustand (`client/src/store/` for `auth`, `campaign`, `customer`, `order`, `ui` stores).
--   **API Interaction:** Axios (`client/src/lib/api/`)
--   **Key Features Implemented:**
-    *   User Authentication.
-    *   Dashboard (likely utilizing data from `/api/dashboard` endpoints).
-    *   Campaign Creation & Management:
-        *   Drag-and-Drop Rule Builder for audience segmentation.
-        *   Audience preview.
-    *   Order Management (e.g., `client/src/components/orders/create-order-dialog.tsx`).
-    *   **AI-Assisted Features (Interacting with `/api/ai` on the main server):**
-        *   Natural Language to Segment Rules (`NLRuleGenerator.tsx`).
-        *   AI Message Suggestions (`MessageGenerator.tsx`).
-        *   Campaign Performance Insights (`CampaignInsights.tsx`).
-        *   (Potentially UIs for new AI features: scheduling, lookalike audiences, auto-tagging, image suggestions).
--   **Build & Run:** Standard Next.js (`npm install`, `npm run dev`, etc.).
+### Frontend
+- **Next.js** (v14+) with App Router
+- **Shadcn UI** - Component library built on Radix UI and Tailwind CSS
+- **Zustand** - Lightweight state management
+- **React DnD** - Drag-and-drop functionality
+- **Recharts** - Interactive charts and data visualization
+- **Axios** - API client
 
-## 2. Server Application (Backend)
+### Backend
+- **Node.js** with Express
+- **MongoDB** - Document database with native driver
+- **Redis Streams** - Pub/sub architecture for async data processing
+- **JWT** - Authentication tokens
+- **Swagger/OpenAPI** - API documentation
 
-Located in the `server/` directory.
+### AI Integration
+- **Google's Gemini API** - Generative AI capabilities
+- **OpenAI API** (Alternative) - Natural language processing
 
--   **Framework:** Node.js with Express.js
--   **Language:** TypeScript
--   **AI Integration:** Google Gemini via `@google/genai` SDK (`server/src/services/geminiService.ts`). Model used: `gemini-2.0-flash`.
--   **Database:** MongoDB.
--   **Asynchronous Processing:** Redis.
--   **Validation:** Joi & Zod.
--   **Authentication:** JWT, Google OAuth.
--   **API Base Path:** `/api` (e.g., `/api/auth`, `/api/campaigns`, `/api/ai`).
+## 🏗️ Architecture
 
-### Server-Side Key Features & Modules:
+```mermaid
+graph TD
+    Client[Next.js Frontend] --> |API Requests| API[Express API Layer]
+    API --> |Token Validation| Auth[Authentication Service]
+    API --> |Data Validation| Validation[Validation Layer]
+    Validation --> |Publish Events| Redis[Redis Streams]
+    Redis --> |Consume Events| Workers[Consumer Services]
+    Workers --> |Persist Data| DB[(MongoDB)]
+    API --> |Read Data| DB
+    API --> |Generate AI Content| Gemini[Gemini API]
+    
+    subgraph Frontend
+        Client --> Components[UI Components]
+        Components --> Stores[Zustand Stores]
+        Stores --> API
+    end
+    
+    subgraph Backend
+        API --> Routes[API Routes]
+        Routes --> Controllers[Controllers]
+        Controllers --> Services[Services]
+    end
+```
 
-*   **Core CRM & Campaign Modules (Paths: `/api/auth`, `/api/customers`, `/api/orders`, `/api/campaigns`, `/api/communication`):**
-    *   Authentication, Customer Management, Order Processing (event-driven via Redis), Campaign Orchestration, Communication Tracking.
-    *   (Functionality largely as previously described in the README).
-*   **Dashboard Module (`/api/dashboard`):**
-    *   Provides data for the client-side dashboard (details of specific endpoints not analyzed but router is present).
-*   **User Management (Partially Implemented/Mounted):**
-    *   `user.router.ts` exists but is **not mounted** in `server/src/api/index.ts`. Endpoints for user profile CRUD are inactive.
+## 🔧 Installation & Setup
 
-*   **AI Module (`/api/ai`) - Powered by `geminiService.ts`:**
-    *   **`POST /segment-rules`**: Converts natural language to JSON segment rules.
-        *   Input: `{ prompt: string }`
-        *   Output: `{ rules: object }`
-    *   **`POST /message-suggestions`**: Generates personalized marketing message templates.
-        *   Input: `{ objective: string, audience?: string }`
-        *   Output: `{ suggestions: string[] }`
-    *   **`POST /campaign-insights`**: Analyzes campaign stats and generates insights/recommendations.
-        *   Input: `{ campaignId?: string, stats?: object }` (fetches stats if not provided)
-        *   Output: `{ insights: string }`
-    *   **`GET /scheduling-suggestions`**: Recommends optimal campaign sending times.
-        *   Input: Query param `campaignType?: string`
-        *   Output: `{ bestDays, bestTimes, reasoning, audienceSpecific }`
-    *   **`POST /lookalike-audience`**: Generates new segment rules for lookalike audiences from source rules.
-        *   Input: `{ sourceRules: object }`
-        *   Output: `{ rules: object }` (new rules)
-    *   **`POST /auto-tag`**: Generates descriptive tags for campaigns.
-        *   Input: `{ name?: string, segmentRules?: object, messageTemplate?: string }`
-        *   Output: `{ tags: string[] }` (likely used for the `aiTags` field on campaigns)
-    *   **`POST /image-suggestions`**: Suggests image concepts for campaigns.
-        *   Input: `{ messageTemplate: string, audience?: string }`
-        *   Output: `{ suggestions: [{ concept, rationale, colorScheme }, ...] }`
+### Prerequisites
+- Node.js (v18+)
+- MongoDB
+- Redis
+- Google Cloud account (for OAuth and Gemini API)
 
-### Gemini Service (`server/src/services/geminiService.ts`):
--   Initializes `GoogleGenAI` with an API key (`config.gemini.apiKey`).
--   Uses `gemini-2.0-flash` model for content generation.
--   `generateText(prompt)`: Returns raw text output from Gemini.
--   `generateStructuredData(prompt)`: Appends "Please respond in JSON format only." to the prompt and attempts to parse the Gemini response as JSON, including handling markdown code blocks.
+### Backend Setup
 
-## Data Flow for AI Features (Examples)
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/mini-crm.git
+cd mini-crm/backend
+```
 
-1.  **Natural Language to Segment Rule:**
-    *   Client (`NLRuleGenerator.tsx`) sends `{ prompt }` to `POST /api/ai/segment-rules`.
-    *   Server (`ai.router.ts`) constructs a detailed system prompt (including JSON schema, field definitions) and the user's prompt.
-    *   Calls `geminiService.generateStructuredData()`.
-    *   Returns the JSON rules to the client.
-2.  **Campaign Auto-Tagging:**
-    *   Client (likely during campaign creation/update) sends campaign details to `POST /api/ai/auto-tag`.
-    *   Server constructs a prompt for Gemini to categorize the campaign.
-    *   Calls `geminiService.generateStructuredData()`.
-    *   Returns `{ tags: [...] }` which can be saved with the campaign.
+2. Install dependencies:
+```bash
+npm install
+```
 
-## Key Updates from New Files:
+3. Create a `.env` file based on `.env.example`:
+```
+# Server configuration
+PORT=8080
+NODE_ENV=development
 
-*   **Integrated AI Backend:** The AI features are now confirmed to be part of the main server application, using the `ai.router.ts` and `geminiService.ts`.
-*   **Gemini Powered:** Google Gemini (`gemini-2.0-flash` model) is the core AI engine.
-*   **New AI Capabilities:**
-    *   Smart Scheduling Suggestions.
-    *   Lookalike Audience Generation.
-    *   Campaign Auto-Tagging.
-    *   Product/Offer Image Suggestions.
-*   **New Server Modules:** `dashboard.router.ts` is now present.
-*   **Client-Side Expansion:** New UI components and Zustand stores (`customer-store.ts`, `order-store.tsx`) indicate a more feature-complete client.
+# MongoDB connection
+MONGODB_URI=mongodb://localhost:27017/miniCrm
+DB_NAME=miniCrm
 
-## Potential Areas for Further Exploration & Improvement
+# Redis connection
+REDIS_URL=redis://localhost:6379
 
-*   **User Module Activation:** The `userRouter` needs to be mounted in `server/src/api/index.ts` for full user profile management.
-*   **Gemini Model Choice:** While `gemini-2.0-flash` is specified, evaluate if more advanced Gemini models (e.g., `gemini-pro`) would provide better quality responses for complex generation tasks, balancing cost and capability.
-*   **Prompt Engineering:** The prompts in `ai.router.ts` are well-defined. Continuous refinement and testing of these prompts will be key to AI feature quality.
-*   **Error Handling in `geminiService`:** Robustly handle potential errors from the Gemini API and ensure graceful degradation if the AI service is unavailable.
-*   **Security & Rate Limiting:** Especially for AI endpoints which can be resource-intensive.
-*   **Client-Side UI for New AI Features:** Ensure intuitive UIs are built for the new AI capabilities like scheduling, lookalike audiences, etc.
+# JWT configuration
+JWT_SECRET=your-secret-key-here
 
-This updated README reflects the new AI capabilities and provides a more accurate picture of Project Xeno's advanced functionalities.
+# Google authentication
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# Gemini API
+GEMINI_API_KEY=your-gemini-api-key
+```
+
+4. Start the backend:
+```bash
+# Development mode
+npm run dev
+
+# Production mode
+npm start
+```
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd ../frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env.local` file:
+```
+NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
+```
+
+4. Start the frontend:
+```bash
+# Development mode
+npm run dev
+
+# Build for production
+npm run build
+npm start
+```
+
+## 📚 API Documentation
+
+Once the backend is running, you can access the Swagger UI at:
+```
+http://localhost:8080/api-docs
+```
+
+### Key API Endpoints
+
+#### Authentication
+- `POST /api/auth/google` - Authenticate with Google
+- `POST /api/auth/verify` - Verify authentication token
+
+#### Customers
+- `GET /api/customers` - List customers
+- `POST /api/customers` - Create customer
+- `GET /api/customers/:id` - Get customer details
+
+#### Orders
+- `GET /api/orders` - List orders
+- `POST /api/orders` - Create order
+- `GET /api/orders/:id` - Get order details
+
+#### Campaigns
+- `GET /api/campaigns` - List campaigns
+- `POST /api/campaigns` - Create campaign
+- `GET /api/campaigns/:id` - Get campaign details
+- `POST /api/campaigns/preview-audience` - Preview audience size
+
+#### AI Features
+- `POST /api/ai/segment-rules` - Generate segment rules from natural language
+- `POST /api/ai/message-suggestions` - Generate message templates
+- `POST /api/ai/campaign-insights` - Generate campaign performance insights
+- `GET /api/ai/scheduling-suggestions` - Get optimal send time recommendations
+- `POST /api/ai/lookalike-audience` - Generate lookalike audience
+- `POST /api/ai/auto-tag` - Generate campaign tags
+- `POST /api/ai/image-suggestions` - Get image concept recommendations
+
+## 💡 AI Features Explained
+
+### Natural Language to Segment Rules
+This feature uses Gemini API to parse natural language descriptions and convert them into structured segmentation rules. For example, a user can type "customers who spent over ₹5000 in the last 6 months and haven't shopped recently" and the system will generate the corresponding rule logic.
+
+### AI-Driven Message Suggestions
+Based on the campaign objective (e.g., "bring back inactive users"), the system generates personalized message templates that are likely to resonate with the target audience.
+
+### Campaign Performance Insights
+Instead of just showing raw stats, this feature provides human-readable insights about campaign performance, including success rates, patterns, and recommendations for improvement.
+
+### Smart Scheduling
+Analyzes general email engagement patterns and user behavior to recommend optimal days and times to send campaigns, tailored to different audience segments.
+
+### Lookalike Audience Generator
+Creates expanded audience segments based on characteristics of an existing segment, helping marketers reach similar customers who might respond well to the same campaign.
+
+### Auto-tagging
+Automatically generates relevant tags for campaigns based on the audience definition, message content, and campaign objective, making organization and reporting easier.
+
+### Image Concept Suggestions
+Recommends visual concepts for campaign images based on the message content and tone, including description, color schemes, and rationale for why they would work well.
+
+## 🚢 Deployment
+
+### Backend Deployment (Railway)
+1. Create a new project on Railway
+2. Connect your GitHub repository
+3. Add environment variables
+4. Deploy the application
+
+### Frontend Deployment (Vercel)
+1. Create a new project on Vercel
+2. Connect your GitHub repository
+3. Configure environment variables
+4. Deploy the application
+
+## ⚠️ Known Limitations
+
+- The AI features require API keys with appropriate rate limits
+- The mock vendor API simulates message delivery but doesn't actually send messages
+- The batch processing in Redis consumers is simplified for demonstration purposes
+- Local development requires running both MongoDB and Redis
+
+## 🔮 Future Improvements
+
+- Add unit and integration tests
+- Implement Redis caching for frequently accessed data
+- Add export functionality for campaign results
+- Enhance analytics with more detailed visualizations
+- Add multi-channel campaign support (email, SMS, push notifications)
+- Implement A/B testing framework
+- Add user roles and permissions
+
+## 📜 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+## 🙏 Acknowledgements
+
+- [Shadcn UI](https://ui.shadcn.com/) for the component library
+- [Next.js](https://nextjs.org/) for the React framework
+- [MongoDB](https://www.mongodb.com/) for the database
+- [Redis](https://redis.io/) for the message broker
+- [Google Gemini API](https://ai.google.dev/gemini-api) for AI capabilities
+
+---
+
+Created with ❤️ as a demonstration project for Xeno SDE Internship Position - 2025
