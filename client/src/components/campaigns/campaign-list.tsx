@@ -6,11 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import CampaignStats from './campaign-stats';
 import CampaignInsights from '@/components/ai/campaign-insights';
+import { redirect } from 'next/navigation';
 
 interface Campaign {
   _id: string;
   name: string;
   messageTemplate: string;
+  isAbTest?: boolean;
   audienceSize: number;
   createdAt: string;
   status: string;
@@ -35,11 +37,12 @@ export default function CampaignList({ campaigns }: CampaignListProps) {
       </div>
     );
   }
-  
+
   return (
     <div className="space-y-6">
       {campaigns.map((campaign) => (
-        <Card key={campaign._id}>
+        // Redirect to campaign details page on click
+        <Card key={campaign._id} onClick={() => redirect(`/dashboard/campaigns/${campaign._id}`)} className="cursor-pointer hover:bg-muted/50 transition">
           <CardHeader className="pb-2">
             <div className="flex items-start justify-between">
               <div>
@@ -48,9 +51,9 @@ export default function CampaignList({ campaigns }: CampaignListProps) {
                   Created {formatDistanceToNow(new Date(campaign.createdAt))} ago
                 </CardDescription>
               </div>
-              <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'}>
-                {campaign.status}
-              </Badge>
+              {campaign.isAbTest && (
+                <Badge variant="outline" className="ml-2">A/B Test</Badge>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -62,7 +65,7 @@ export default function CampaignList({ campaigns }: CampaignListProps) {
                 <p className="text-sm">{campaign.messageTemplate}</p>
               </div>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <h4 className="text-sm font-medium text-muted-foreground mb-2">
@@ -70,13 +73,21 @@ export default function CampaignList({ campaigns }: CampaignListProps) {
                 </h4>
                 <CampaignStats stats={campaign.stats} />
               </div>
-              
+
               <div>
                 <h4 className="text-sm font-medium text-muted-foreground mb-2">
                   AI Insights:
                 </h4>
                 <CampaignInsights campaign={campaign} />
               </div>
+              {campaign.isAbTest && (
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                    A/B Test:
+                  </h4>
+                  <Badge variant="outline" className="ml-2">A/B Test</Badge>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
