@@ -122,7 +122,7 @@ export default function CreateOrderDialog({ open, onOpenChange }: CreateOrderDia
       orderDate: new Date().toISOString(),
       amount: calculateTotal(),
       items: orderItems,
-      status: 'pending' as const
+      status: 'completed' as const
     };
     
     const success = await createOrder(orderData);

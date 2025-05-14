@@ -6,9 +6,10 @@ let client;
 
 export async function connectRedis() {
   if (client) return client;
-
   try {
     client = createClient({
+      username: config.redis.username,
+      password: config.redis.password,
       socket: {
         host: config.redis.url,
         port: config.redis.port,

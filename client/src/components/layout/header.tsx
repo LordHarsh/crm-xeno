@@ -22,7 +22,7 @@ export default function Header() {
   // Determine if we should show the "Create" button
   const shouldShowCreateButton = () => {
     if (pathname === '/dashboard/campaigns') return true;
-    if (pathname === '/dashboard/customers') return true;
+    // if (pathname === '/dashboard/customers') return true;
     return false;
   };
   

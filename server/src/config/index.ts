@@ -22,6 +22,8 @@ export default {
   redis: {
     url: process.env.REDIS_URL || 'redis://localhost:6379',
     port: parseInt(process.env.REDIS_PORT) || 6379,
+    username: process.env.REDIS_USERNAME!,
+    password: process.env.REDIS_PASSWORD!,
   },
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,
