@@ -29,6 +29,7 @@ export default (): Router => {
             if (customerId) filter.customerId = customerId;
             if (status) filter.status = status;
 
+            // Get orders
             const orders = await db.collection('orders')
                 .find(filter)
                 .sort({ [sortBy as string]: parseInt(order as string) })
@@ -36,10 +37,32 @@ export default (): Router => {
                 .limit(parseInt(limit as string))
                 .toArray();
 
+            // Get the count for pagination
             const total = await db.collection('orders').countDocuments(filter);
 
+            // Extract unique customer IDs from orders
+            const customerIds = [...new Set(orders.map(order => order.customerId))];
+
+            // Fetch customer data for those IDs
+            const customers = await db.collection('customers')
+                .find({ _id: { $in: customerIds.map(id => new ObjectId(id)) } })
+                .project({ _id: 1, name: 1 })
+                .toArray();
+
+            // Create a lookup map for quick access
+            const customerMap = new Map();
+            customers.forEach(customer => {
+                customerMap.set(customer._id.toString(), customer.name);
+            });
+
+            // Enrich orders with customer names
+            const enrichedOrders = orders.map(order => ({
+                ...order,
+                customerName: customerMap.get(order.customerId) || 'Unknown Customer'
+            }));
+
             res.status(200).json({
-                data: orders,
+                data: enrichedOrders,
                 pagination: {
                     total,
                     page: parseInt(page as string),

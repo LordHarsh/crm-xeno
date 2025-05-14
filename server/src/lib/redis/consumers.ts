@@ -163,6 +163,7 @@ async function startOrderConsumer() {
         // Add timestamps
         data.createdAt = new Date();
         data.updatedAt = new Date();
+        data._id = data._id ? new ObjectId(data._id) : new ObjectId();
 
         // Insert order
         const result = await ordersCollection.insertOne(data);
