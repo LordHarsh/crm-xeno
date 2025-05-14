@@ -2,6 +2,11 @@
 
 ![image](https://github.com/user-attachments/assets/5d8228d8-0597-4213-bc95-62e23cade3dd)
 ![image](https://github.com/user-attachments/assets/e1c2ed84-c383-495e-99c6-26d0e6160376)
+![image](https://github.com/user-attachments/assets/a8b3fde0-0a59-460d-a38a-c89438df7355)
+![image](https://github.com/user-attachments/assets/e346be3a-f3f7-441e-b28a-fbd6e6e4b919)
+![image](https://github.com/user-attachments/assets/6c9bbd22-8bb3-4b83-be1a-b4ff7d368c0a)
+![image](https://github.com/user-attachments/assets/3b3488e2-d235-476c-9b43-f33afe536cdf)
+![image](https://github.com/user-attachments/assets/e7cda3c7-2ceb-4b2a-badb-c0b52f560459)
 
 
 A modern customer relationship management platform that enables customer segmentation, personalized campaign delivery, and intelligent insights using AI-powered features.
