@@ -25,7 +25,8 @@ export default (): Router => {
     - Last purchase date (within the last 6 months)
     - Number of visits (between 1 and 20)
     - Tags (1-3 tags like "new", "regular", "premium", "inactive", "high-value", etc.)
-    - lastPurchaseDate date format is YYYY-MM-DD
+    - For reference, todays date is ${new Date().toISOString().split('T')[0]}.
+    - lastPurchaseDate date format is YYYY-MM-DD. And the date should be in the last 6 months.
     
     Return the data as a JSON array of customer objects like this:
     {
@@ -169,6 +170,7 @@ export default (): Router => {
     For each order:
     - Select a customer ID from the list above (use the exact ID format like cust_1, cust_2, etc.)
     - Include 1-5 items from the product list above with quantities
+    - For reference, todays date is ${new Date().toISOString().split('T')[0]}.
     - Include an order date within the last 6 months (format: YYYY-MM-DD)
     - Include a status ("completed", "pending", "cancelled")
     

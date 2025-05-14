@@ -42,7 +42,7 @@ export default function DemoDataGenerator() {
             const customersResponse = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/demo-data/generate-customers`,
                 {
-                    params: { count: 1 },
+                    params: { count: 10 },
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
@@ -68,7 +68,7 @@ export default function DemoDataGenerator() {
                 {
                     params: {
                         customerMap: JSON.stringify(customerMapping),
-                        count: 30
+                        count: 40
                     },
                     headers: { Authorization: `Bearer ${token}` }
                 }
@@ -125,8 +125,8 @@ export default function DemoDataGenerator() {
                                 This will generate approximately:
                             </p>
                             <ul className="list-disc list-inside space-y-1 text-sm">
-                                <li>15 realistic customer profiles</li>
-                                <li>30 orders with diverse product combinations</li>
+                                <li>10 realistic customer profiles</li>
+                                <li>40 orders with diverse product combinations</li>
                                 <li>Various customer segments and behaviors</li>
                             </ul>
                             <p className="text-sm">
