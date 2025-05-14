@@ -154,6 +154,13 @@ async function startOrderConsumer() {
         try {
           if (operation === 'create') {
             // Add timestamps
+            const customerExists = await customersCollection.findOne({ 
+              _id: new ObjectId(data.customerId) 
+            });
+            if (!customerExists) {
+              logger.warn(`Customer with ID ${data.customerId} does not exist. Skipping order creation.`);
+              continue; // Skip if customer does not exist
+            }
             data.createdAt = new Date();
             data.updatedAt = new Date();
 

@@ -7,6 +7,7 @@ import campaignRouter from './campaign/campaign.router';
 import communicationRouter from './communication/communication.router';
 import dashboardRouter from './dashboard/dashboard.router';
 import aiRouter from './ai/ai.router';
+import simulateRouter from './simulate/simulate.router';
 
 export default (): Router => {
   const app = Router();
@@ -17,6 +18,7 @@ export default (): Router => {
   app.use('/communication', communicationRouter());
   app.use('/dashboard', dashboardRouter());
   app.use('/ai', aiRouter());
+  app.use('/demo-data', simulateRouter());
 
   return app;
 };

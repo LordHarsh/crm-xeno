@@ -58,7 +58,6 @@ export const createCustomer = async (req: Request, res: Response, next: NextFunc
     try {
         // Validate request body
         const result = customerSchema.safeParse(req.body);
-
         if (!result.success) {
             throw {
                 statusCode: 400, message: 'Invalid request body',

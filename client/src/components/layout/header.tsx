@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { PlusCircle, Bell } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
+import DemoDataGenerator from '../demo/demo-data-generator';
 
 export default function Header() {
   const pathname = usePathname();
@@ -50,7 +51,7 @@ export default function Header() {
             <span>Create</span>
           </Button>
         )}
-        
+        <DemoDataGenerator />
         <Button variant="ghost" size="icon">
           <Bell size={18} />
         </Button>

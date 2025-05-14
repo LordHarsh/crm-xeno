@@ -10,7 +10,7 @@ export const orderItemSchema = Joi.object({
 
 export const orderSchema = Joi.object({
     customerId: Joi.string().required(),
-    customerName: Joi.string().required(),
+    customerName: Joi.string().optional(),
     orderDate: Joi.date().default(() => new Date()),
     amount: Joi.number().min(0).required(),
     items: Joi.array().items(orderItemSchema).min(1).required(),
